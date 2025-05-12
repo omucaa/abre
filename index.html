@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom right, #f8e1e6, #fce4ec);
+            font-family: "Dancing Script", cursive;
+            color: #9f7189;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .message {
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .image-container {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid #b8819c;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s;
+        }
+
+        .image-container:hover {
+            transform: scale(1.05);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            opacity: 0;
+            font-size: 20px;
+            color: #ece1e6;
+            animation: float 4s ease-in infinite;
+        }
+
+        .play-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff66b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: none; /* Escondido inicialmente */
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            font-size: 0.8em;
+            color: #eadee4;
+        }
+    </style>
+</head>
+<body>
+    <div class="message">Perdoa eu?</div>
+    
+    <div class="image-container">
+        <img src="https://i.pinimg.com/736x/61/73/a3/6173a31ecdaa6c40673340b10a2059f6.jpg" alt="Flores românticas">
+    </div>
+
+    <div class="hearts" id="hearts"></div>
+    
+
+    <!-- Botão de play que só aparece se o autoplay falhar -->
+    <button class="play-button" id="playButton">▶ Tocar Música</button>
+
+    <!-- Player de áudio - CERTIFIQUE-SE QUE O NOME DO ARQUIVO ESTÁ CORRETO -->
+    <audio id="myAudio" loop>
+        <source src="Sad Hamster Violin Meme (Full).mp3" type="audio/mp3">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <script>
+        // Criar corações flutuantes
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            const heartCount = 20;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '😭';
+                heart.classList.add('heart');
+                
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                
+                const size = Math.random() * 20 + 10;
+                heart.style.fontSize = size + 'px';
+                
+                heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        // Controle de áudio
+        function initAudio() {
+            const audio = document.getElementById('myAudio');
+            const playButton = document.getElementById('playButton');
+            
+            // Tenta tocar automaticamente
+            audio.play().then(() => {
+                console.log('Áudio tocando automaticamente');
+            }).catch(error => {
+                console.log('Autoplay bloqueado:', error);
+                playButton.style.display = 'block';
+                
+                // Tocar quando o usuário clicar em qualquer lugar da página
+                document.body.addEventListener('click', function() {
+                    audio.play();
+                    playButton.style.display = 'none';
+                }, { once: true });
+            });
+            
+            // Controle pelo botão de play
+            playButton.addEventListener('click', function() {
+                audio.play();
+                playButton.style.display = 'none';
+            });
+        }
+
+        // Iniciar quando a página carregar
+        window.onload = function() {
+            createHearts();
+            initAudio();
+            
+            setInterval(() => {
+                const hearts = document.querySelectorAll('.heart');
+                if (hearts.length < 50) {
+                    createHearts();
+                }
+            }, 3000);
+        };
+    </script>
+</body>
+</html>
